@@ -23,7 +23,7 @@ function themoviedbSearch($title, $aka=null)
 	$apiKey = $config['themoviedbapikey'];
 	$language = $config['themoviedblocale'];
 
-    $url = 'https://api.themoviedb.org/3/search/movie?api_key='.$apiKey.'&language='.$language.'&query='.$title.'&include_adult=true';
+    $url = 'https://api.themoviedb.org/3/search/movie?api_key='.$apiKey.'&language='.$language.'&query='.str_replace ('_', ' ',$title).'&include_adult=true';
 
     $resp = httpClient($url, $cache);
     if (!$resp['success']) $CLIENTERROR .= $resp['error']."\n";
@@ -60,6 +60,16 @@ function themoviedbMeta()
     ));
 }
 
+function themoviedbActor($name, $actorid)
+{
+
+    $ary = array();
+    $ary[0][0] = $name;
+    $ary[0][1] = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2'.$actorid;
+
+    return $ary;
+}
+
 function themoviedbData($moviedbId)
 {
 	global $themoviedbPrefix;
@@ -86,11 +96,33 @@ function themoviedbData($moviedbId)
 	$coverurl = $jsonObject->{'poster_path'};
 	$data['coverurl'] = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2'.$coverurl;
 	$data['director'] =$jsonObject->{'production_companies'}[0]->{'name'};
+	$countries = array();
+	foreach($jsonObject->{'production_countries'} as $country) {
+		$countries[] = $country->{'name'};
+	}
+	$data['country'] = join(', ', $countries);
+	$data['runtime'] = $jsonObject->{'runtime'};
 	$data['rating']=$jsonObject->{'vote_average'};
 	foreach($jsonObject->{'genres'} as $genre) {
         $data['genres'][] = $genre->{'name'};
     }
 	 $data['plot']=$jsonObject->{'overview'};
+	 
+	 $castResp = httpClient('https://api.themoviedb.org/3/movie/'.$moviedbId.'/credits?api_key='.$apiKey, $cache);
+	 if (!$castResp['success']) $CLIENTERROR .= $castResp['error']."\n";
+	 
+	 $castJsonObject = json_decode($castResp['data']);
+	 foreach($castJsonObject->{'cast'} as $cast) {
+		 $castHtml  .= $cast->{'name'}."::".$cast->{'character'}."::".$themoviedbPrefix.$cast->{'profile_path'}."\n";
+	 }
+	 $data['cast'] = $castHtml;
+	 foreach($castJsonObject->{'crew'} as $crew) {
+		if($crew->{'job'} == "Producer")
+		{
+			$data['director'] = $crew->{'name'};
+			break;
+		}
+	 }
 	 //print_r($data);
 	 
 	 return $data;
