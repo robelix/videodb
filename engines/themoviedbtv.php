@@ -10,20 +10,20 @@
  * @version $Id: imdb.php,v 1.76 2013/04/10 18:11:43 andig2 Exp $
  */
 
-$GLOBALS['themoviedbPrefix'] = 'themoviedb:';
+$GLOBALS['themoviedbPrefix'] = 'themoviedbtv:';
 
 
-function themoviedbSearch($title, $aka=null)
+function themoviedbtvSearch($title, $aka=null)
 {
     global $themoviedbPrefix;
     global $CLIENTERROR;
     global $cache;
 	global $config;
 
-	$apiKey = $config['themoviedbapikey'];
-	$language = $config['themoviedblocale'];
+	$apiKey = $config['themoviedbtvapikey'];
+	$language = $config['themoviedbtvlocale'];
 
-    $url = 'https://api.themoviedb.org/3/search/movie?api_key='.$apiKey.'&language='.$language.'&query='.str_replace ('_', ' ',$title).'&include_adult=true';
+    $url = 'https://api.themoviedb.org/3/search/tv?api_key='.$apiKey.'&language='.$language.'&query='.str_replace ('_', ' ',$title).'&include_adult=true';
 
     $resp = httpClient($url, $cache);
     if (!$resp['success']) $CLIENTERROR .= $resp['error']."\n";
@@ -40,7 +40,7 @@ function themoviedbSearch($title, $aka=null)
 	{
 			$info           = array();
 			$info['id']     = $themoviedbPrefix.$row->{'id'};
-			$info['title']  = $row->{'title'}.' ('.$row->{'original_title'}.') ('.$row->{'release_date'}.')';
+			$info['title']  = $row->{'name'}.' ('.$row->{'original_name'}.') ('.$row->{'first_air_date'}.')';;
 			$data[]         = $info;
 #           dump($info);
 	}
@@ -49,9 +49,9 @@ function themoviedbSearch($title, $aka=null)
 }
 
 
-function themoviedbMeta()
+function themoviedbtvMeta()
 {
-    return array('name' => 'The Movie DB', 'stable' => 1, 'config' => array(
+    return array('name' => 'The Movie DB TV', 'stable' => 1, 'config' => array(
                                 array('opt' => 'locale', 'name' => 'The Movie DB Language',
                                       'values' => array('en-US'=>'en-US', 'de-DE'=>'de-DE'), 
                                       'desc' => 'Select language.'),
@@ -60,17 +60,7 @@ function themoviedbMeta()
     ));
 }
 
-function themoviedbActor($name, $actorid)
-{
-
-    $ary = array();
-    $ary[0][0] = $name;
-    $ary[0][1] = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2'.$actorid;
-
-    return $ary;
-}
-
-function themoviedbData($moviedbId)
+function themoviedbtvData($moviedbId)
 {
 	global $themoviedbPrefix;
 	
@@ -78,42 +68,42 @@ function themoviedbData($moviedbId)
     global $cache;
 	global $config;
 	
-	$apiKey = $config['themoviedbapikey'];
-	$language = $config['themoviedblocale'];
+	$apiKey = $config['themoviedbtvapikey'];
+	$language = $config['themoviedbtvlocale'];
 
     $moviedbId = preg_replace('/^'.$themoviedbPrefix.'/', '', $moviedbId);
     $data= array();
 
-	$resp = httpClient('https://api.themoviedb.org/3/movie/'.$moviedbId.'?api_key='.$apiKey.'&language='.$language, $cache);     // added trailing / to avoid redirect
+	$resp = httpClient('https://api.themoviedb.org/3/tv/'.$moviedbId.'?api_key='.$apiKey.'&language='.$language, $cache);     // added trailing / to avoid redirect
     if (!$resp['success']) $CLIENTERROR .= $resp['error']."\n";
 	
 	$data['encoding'] = 'UTF-8';
 	
 	$jsonObject = json_decode($resp['data']);
 	
-	$data['year'] = substr($jsonObject->{'release_date'},0,4);
-	$data['title'] = $jsonObject->{'title'};
-	$coverurl = $jsonObject->{'poster_path'};
+	$data['year'] = substr($jsonObject->{'first_air_date'},0,4);
+	$data['title'] = $jsonObject->{'name'};
+	$coverurl = $jsonObject->{'backdrop_path'};
 	$data['coverurl'] = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2'.$coverurl;
-	$data['director'] =$jsonObject->{'production_companies'}[0]->{'name'};
+	$data['director'] =$jsonObject->{'created_by'}[0]->{'name'};
 	$countries = array();
-	foreach($jsonObject->{'production_countries'} as $country) {
-		$countries[] = $country->{'name'};
+	foreach($jsonObject->{'origin_country'} as $country) {
+		$countries[] = $country;
 	}
 	$data['country'] = join(', ', $countries);
-	$data['runtime'] = $jsonObject->{'runtime'};
+	$data['runtime'] = $jsonObject->{'episode_run_time'}[0];
 	$data['rating']=$jsonObject->{'vote_average'};
 	foreach($jsonObject->{'genres'} as $genre) {
         $data['genres'][] = $genre->{'name'};
     }
 	 $data['plot']=$jsonObject->{'overview'};
 	 
-	 $castResp = httpClient('https://api.themoviedb.org/3/movie/'.$moviedbId.'/credits?api_key='.$apiKey, $cache);
+	 $castResp = httpClient('https://api.themoviedb.org/3/tv/'.$moviedbId.'/credits?api_key='.$apiKey, $cache);
 	 if (!$castResp['success']) $CLIENTERROR .= $castResp['error']."\n";
 	 
 	 $castJsonObject = json_decode($castResp['data']);
 	 foreach($castJsonObject->{'cast'} as $cast) {
-		 $castHtml  .= $cast->{'name'}."::".$cast->{'character'}."::".$themoviedbPrefix.$cast->{'profile_path'}."\n";
+		 $castHtml  .= $cast->{'name'}."::".$cast->{'character'}."::themoviedb:".$cast->{'profile_path'}."\n";
 	 }
 	 $data['cast'] = $castHtml;
 	 foreach($castJsonObject->{'crew'} as $crew) {
