@@ -13,13 +13,12 @@
 $GLOBALS['urlPrefix'] = 'url:';
 
 
-function urlActorUrl($name, $actorid)
+function urlActor($name, $actorid)
 {
 
     $ary = array();
     $ary[0][0] = $name;
     $ary[0][1] = $actorid;
-print_r($ary);
     return $ary;
 }
 ?>
