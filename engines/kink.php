@@ -2,6 +2,25 @@
 
 $GLOBALS['kinkPrefix'] = 'kink:';
 
+function kinkSearch($title, $aka=null)
+{
+    global $kinkPrefix;
+
+    $data = array();
+
+    // add encoding
+    $data['encoding'] = 'UTF-8';
+
+	$found = preg_split ('/_/i', $title, 2);
+
+	$info           = array();
+	$info['id']     = $kinkPrefix.$found[0];
+	$info['title']  = $found[1];
+	$data[]         = $info;
+
+    return $data;
+}
+
 function kinkActor($name, $actorid)
 {
 	global $CLIENTERROR;
