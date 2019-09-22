@@ -20,7 +20,7 @@ function metalbondageData($metalbondageId)
 	//print_r($resp['data']);
 	$response = $resp['data'];
 	
-	preg_match('/http:\/\/www.metalbondage.com\/updates\/mb\d+\/mb\d+.jpg/i', $response, $matches);
+	preg_match('/http:\/\/www.metalbondage.com\/updates\/mb\d+\/.*?\.jpg/i', $response, $matches);
 	$data['coverurl'] = $matches[0];
 	
 	$data['director'] = "metalbondage";
