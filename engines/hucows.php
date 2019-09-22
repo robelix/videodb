@@ -45,7 +45,7 @@ function hucowsData($hucowsId)
 	$data['plot'] = $matches[1];
 	
 	
-	preg_match_all('/<a.*href=".*tag\/(.*)\/.*rel="tag".*?>(.*?)</i', $response, $matches, PREG_SET_ORDER);
+	preg_match_all('/<a.*?href=".*?tag\/(.*?)\/.*?rel="tag".*?>(.*?)</i', $response, $matches, PREG_SET_ORDER);
 	foreach($matches as $match) {
 		$cast .= $match[2].'::::url:http://www.hucows.com/girls/'.$match[1].".jpg\n";
 	}
