@@ -327,7 +327,15 @@ function request($urlonly=false)
 	}
 
 	// going directly to trace.php without options?
-	if (!$url) $url = 'http://www.imdb.com';
+	if (!$url) {
+		$url = 'https://www.imdb.com';
+
+		// dirty hack to fix imdb searchform.
+		// there is javascript that replaces the hidden videodburl input, so you don't get searchresults
+		if (preg_match('/^q=/', $request) ) {
+			$url = 'https://www.imdb.com/find';
+		}
+	}
 
 	// remove session identifier before request is sent or caching will not work
 	$url = preg_replace("/&".SID."$/", "", $url);
