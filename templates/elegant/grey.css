@@ -442,6 +442,14 @@ h4 {				/* used on edit page */
 	padding: 2px;
 }
 
+.list_item {
+	padding: 5px;
+}
+
+.list_item .cover {
+	padding-right: 5px;
+	padding-bottom: 5px;
+}
 
 /*
  * Images
