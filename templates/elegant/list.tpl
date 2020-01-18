@@ -45,7 +45,7 @@
 			</div>
 *}
 
-{if $listcolumns < 4}
+{if $listcolumns < 6}
                 <div class="list_item_more">
                     {if $video.editable}
                     <div class="list_item_buttons">
