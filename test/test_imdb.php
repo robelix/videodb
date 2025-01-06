@@ -47,7 +47,7 @@ class TestIMDB extends UnitTestCase
         $this->assertEqual($data['director'], 'George Lucas');
         $this->assertTrue($data['rating'] >= 6);
         $this->assertTrue($data['rating'] <= 8);
-        $this->assertEqual($data['country'], 'USA');
+        $this->assertEqual($data['country'], 'United States, United Kingdom');
         $this->assertEqual($data['language'], 'english');
         $this->assertEqual(join(',', $data['genres']), 'Action,Adventure,Fantasy,Sci-Fi');
 
@@ -230,7 +230,7 @@ class TestIMDB extends UnitTestCase
         $this->assertEqual($data['director'], 'Rob Bowman');
         $this->assertTrue($data['rating'] >= 7);
         $this->assertTrue($data['rating'] <= 9);
-        $this->assertEqual($data['country'], 'USA');
+        $this->assertEqual($data['country'], 'United States');
         $this->assertEqual($data['language'], 'english');
         $this->assertEqual(join(',', $data['genres']), 'Action,Adventure,Sci-Fi');
 
@@ -270,7 +270,7 @@ class TestIMDB extends UnitTestCase
         $this->assertEqual($data['director'], 'Richard Spence');
         $this->assertTrue($data['rating'] >= 5);
         $this->assertTrue($data['rating'] <= 8);
-        $this->assertEqual($data['country'], 'UK');
+        $this->assertEqual($data['country'], 'United Kingdom');
         $this->assertEqual($data['language'], 'english');
         $this->assertEqual(join(',', $data['genres']), 'Crime,Drama,Mystery');
 
