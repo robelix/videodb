@@ -29,7 +29,7 @@ class TestIMDB extends UnitTestCase
 
         echo '<pre>';dump($data);echo '</pre>';
 
-        $this->assertEqual($data['istv'], '');
+        $this->assertEqual($data['istv'], 0);
         $this->assertEqual($data['title'], 'Star Wars: Episode I');
         $this->assertPattern('#The Phantom Menace|Die dunkle Bedrohung#', $data['subtitle']);
         
@@ -78,7 +78,7 @@ class TestIMDB extends UnitTestCase
 
 #       dump($data);
 
-        $this->assertEqual($data['istv'], '');
+        $this->assertEqual($data['istv'], 0);
         $this->assertPattern('/Harold/', $data['plot']);
     }
 
