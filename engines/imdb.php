@@ -347,7 +347,9 @@ function imdbData($imdbID)
 
     // Plot
     $data['plot'] = "";
-    if (array_key_exists('plainText', $json_data["props"]["pageProps"]["aboveTheFoldData"]["plot"]["plotText"]) )
+
+    if (is_array($json_data["props"]["pageProps"]["aboveTheFoldData"]["plot"]["plotText"]) &&
+        array_key_exists('plainText', $json_data["props"]["pageProps"]["aboveTheFoldData"]["plot"]["plotText"]) )
     {
         $data['plot'] = stripslashes($json_data["props"]["pageProps"]["aboveTheFoldData"]["plot"]["plotText"]["plainText"]);
     }
