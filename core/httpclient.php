@@ -100,7 +100,13 @@ function get_response_encoding($response)
 function httpClient($url, $cache = false, $para = null, $reload = false)
 {
     global $config;
-    $client = new GuzzleHttp\Client();
+    //$client = new GuzzleHttp\Client();
+    $clientConfig = [
+        'headers' => [
+            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:108.0) Gecko/20100101 Firefox/108.0',
+        ],
+    ];
+    $client = new GuzzleHttp\Client($clientConfig);
 
     $requestConfig = [];
     $headers = '';  // additional HTTP headers, used for post data
