@@ -39,7 +39,7 @@ class TestIMDB extends UnitTestCase
         $this->assertEqual($data['origtitle'], 'Star Wars: Episode I - The Phantom Menace');
         $this->assertEqual($data['year'], 1999);
         $this->assertPattern('#https://m.media-amazon.com/.*.jpg#', $data['coverurl']);
-        $this->assertEqual($data['mpaa'], 'Rated PG for sci-fi action/violence');
+        $this->assertEqual($data['mpaa'], 'PG');
         # bbfc no longer appears on main page
         # test disabled
         # $this->assertEqual($data[bbfc], 'U');
